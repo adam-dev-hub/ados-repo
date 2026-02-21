@@ -1,0 +1,30 @@
+FROM quay.io/fedora-ostree-desktops/kinoite:latest
+
+# Sysctl tuning
+COPY system/99-vm-performance.conf /etc/sysctl.d/99-vm-performance.conf
+
+# journald limits
+RUN mkdir -p /etc/systemd/journald.conf.d
+COPY system/journald-limits.conf /etc/systemd/journald.conf.d/limits.conf
+
+# Dev toolchain (installed in the base image)
+RUN rpm-ostree install \
+    git \
+    gh \
+    python3 \
+    python3-pip \
+    gcc \
+    gcc-c++ \
+    clang \
+    cmake \
+    ninja-build \
+    make \
+    gdb \
+    podman \
+    nodejs \
+    npm \
+    && rpm-ostree cleanup -m
+
+# Disable some rarely-needed services by default (can be re-enabled later)
+RUN systemctl disable ModemManager.service 2>/dev/null || true && \
+    systemctl disable avahi-daemon.service 2>/dev/null || true

@@ -1,0 +1,9 @@
+org.mozilla.firefox
+org.libreoffice.LibreOffice
+org.gimp.GIMP
+org.inkscape.Inkscape
+org.videolan.VLC
+io.github.joplinapp.Joplin
+com.vscodium.codium
+org.gnome.Aisleriot
+org.kde.kcalc
