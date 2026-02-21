@@ -1,4 +1,4 @@
-FROM quay.io/fedora-ostree-desktops/kinoite:latest
+FROM quay.io/fedora-ostree-desktops/kinoite:42.20260126.0-x86_64
 
 # Sysctl tuning
 COPY system/99-vm-performance.conf /etc/sysctl.d/99-vm-performance.conf
