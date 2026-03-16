@@ -1,4 +1,4 @@
-FROM quay.io/fedora-ostree-desktops/kinoite:42.20260126.0-x86_64
+FROM quay.io/fedora-ostree-desktops/kinoite:42
 
 # Sysctl tuning
 COPY system/99-vm-performance.conf /etc/sysctl.d/99-vm-performance.conf
@@ -28,3 +28,16 @@ RUN rpm-ostree install \
 # Disable some rarely-needed services by default (can be re-enabled later)
 RUN systemctl disable ModemManager.service 2>/dev/null || true && \
     systemctl disable avahi-daemon.service 2>/dev/null || true
+# Enable autologin for GDM
+RUN mkdir -p /etc/gdm && \
+    echo "[daemon]" > /etc/gdm/custom.conf && \
+    echo "AutomaticLogin=adam" >> /etc/gdm/custom.conf && \
+    echo "AutomaticLoginEnable=True" >> /etc/gdm/custom.conf
+
+# Disable initial setup
+RUN systemctl mask initial-setup.service
+RUN systemctl mask initial-setup-text.service
+
+RUN mkdir -p /etc/systemd/system/getty@tty1.service.d && \
+    printf "[Service]\nExecStart=\nExecStart=-/usr/sbin/agetty --autologin adam --noclear %%I \$TERM\n" \
+    > /etc/systemd/system/getty@tty1.service.d/autologin.conf
